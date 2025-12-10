@@ -1,20 +1,22 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using dANGEORS;
 using System;
 using static System.Net.Mime.MediaTypeNames;
 
 class Program
 {
+    static int playerHealth = 100;
+    static int playerGold = 0;
+    static int inventory_arrows = 0;
+    static int inventoryCount = 0;
     static void Main(string[] args)
     {
         // Инициализация переменных
         string[] dungeonMap = new string[10];
         Random random = new Random();
 
-        int playerHealth = 100;
-        int playerGold = 0;
-        int inventory_arrows = 0;
-        int inventoryCount = 0;
+        
 
         // Заполнение карты подземелья
         for (int i = 0; i < dungeonMap.Length - 1; i++)
@@ -69,83 +71,233 @@ class Program
             return playerGold;
 
         }
-        static int Merchant(int playerGold, ref int inventoryCount, ref int inventory_arrows)
+        static int Merchant()
         {
-            while (true)
-            {
+            //while (true)
+            //{
 
-            Console.WriteLine($"Торговец предлагает Заглянуть в его лавку. \n У вас сейчас: {inventoryCount} зелий, золота: {playerGold}");
-            Console.WriteLine(" 1 - Купить зелье , 2 - Купить Стрелы  , 3 - Отказаться");
-            int weaponChoice = int.Parse(Console.ReadLine());
-            if (weaponChoice == 1)
+            //    Console.WriteLine($"Торговец предлагает Заглянуть в его лавку. \n У вас сейчас: {inventoryCount} зелий, золота: {playerGold}");
+            //    Console.WriteLine(" 1 - Купить зелье , 2 - Купить Стрелы  , 3 - Отказаться");
+            //    int weaponChoice = int.Parse(Console.ReadLine());
+            //    if (weaponChoice == 1)
+            //    {
+            //        if (playerGold >= 30)
+            //        {
+            //            Console.WriteLine("Сколько зелий вы купите? (одно зелье стоит 30 золота)");
+            //            string userInput = Console.ReadLine();
+            //            int userAnswer;
+            //            if (int.TryParse(userInput, out userAnswer))
+            //            {
+            //                if (playerGold >= 30 * int.Parse(userInput))
+            //                {
+            //                    playerGold -= 30 * int.Parse(userInput);
+            //                    inventoryCount += userAnswer;
+            //                    Console.WriteLine($"Вы купили зелье.\n У вас {inventoryCount} зелий и {playerGold} денег");
+            //                }
+            //                else
+            //                {
+            //                    Console.WriteLine("У Вас недостаточно золота.");
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine("У Вас недостаточно золота.");
+            //        }
+            //    }
+            //    if (weaponChoice == 2)
+            //    {
+            //        if (playerGold >= 15)
+            //        {
+            //            Console.WriteLine("Сколько Стрел вы купите? (одна стрела стоит 15 золотых)");
+            //            string userInput = Console.ReadLine();
+            //            int userAnswer;
+            //            if (int.TryParse(userInput, out userAnswer))
+            //            {
+            //                if (playerGold >= 15 * int.Parse(userInput))
+            //                {
+            //                    playerGold -= 15 * int.Parse(userInput);
+            //                    inventory_arrows += userAnswer;
+            //                    Console.WriteLine($"Вы купили {inventory_arrows} Стрел.\n У вас {inventory_arrows} Стрел  и {playerGold} денег");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                Console.WriteLine("У Вас недостаточно золота.");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine("У Вас недостаточно золота.");
+            //        }
+            //    }
+            //    else if (weaponChoice == 3)
+            //    {
+            //        Console.WriteLine("Вы отказались");
+            //    }
+            //    Console.Write("Хотите еще что-то купить? (1 = да, 2 = нет): ");
+            //    string answer = Console.ReadLine().ToLower();
+
+            //    if (answer != "1")
+            //    {
+            //        Console.ReadKey();
+            //    }
+
+            //    return playerGold;
+            //}
+            // Создаем список товаров
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            Console.WriteLine("=== МАГАЗИН ПРИКЛЮЧЕНЦА ===");
+            Console.WriteLine("Добро пожаловать в наш магазин!\n");
+
+            bool continueShopping = true;
+
+            while (continueShopping)
             {
-                if (playerGold >= 30)
-                {                   
-                Console.WriteLine("Сколько зелий вы купите? (одно зелье стоит 30 золота)");
-                string userInput = Console.ReadLine();
-                int userAnswer;
-                     if (int.TryParse(userInput, out userAnswer))
-                     {
-                         if (playerGold >= 30 * int.Parse(userInput))
-                         {
-                                playerGold -= 30 * int.Parse(userInput);
-                                inventoryCount += userAnswer;
-                                Console.WriteLine($"Вы купили зелье.\n У вас {inventoryCount} зелий и {playerGold} денег");
-                         }
-                            else
-                            {
-                                Console.WriteLine("У Вас недостаточно золота.");
-                            }
-                     }
+                DisplayStatus();
+                DisplayShop();
+
+                Console.Write("\nВыберите товар (1-2) или 0 для выхода: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1": // Стрелы
+                        BuyArrows();
+                        break;
+                    case "2": // Зелья
+                        BuyPotions();
+                        break;
+                    case "0":
+                        continueShopping = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неверный выбор!");
+                        break;
                 }
-                    else
+
+                if (continueShopping && (choice == "1" || choice == "2"))
+                {
+                    Console.Write("\nХотите еще что-то купить? (да/нет): ");
+                    string answer = Console.ReadLine().ToLower();
+
+                    if (answer != "да" && answer != "yes" && answer != "д" && answer != "y")
                     {
-                        Console.WriteLine("У Вас недостаточно золота.");
+                        continueShopping = false;
                     }
+                }
             }
-                if (weaponChoice == 2)
-                {
-                    if (playerGold >= 15)
-                    {
-                        Console.WriteLine("Сколько Стрел вы купите? (одна стрела стоит 15 золотых)");
-                        string userInput = Console.ReadLine();
-                        int userAnswer;
-                        if (int.TryParse(userInput, out userAnswer))
-                        {
-                            if (playerGold >= 15 * int.Parse(userInput))
-                            {
-                                playerGold -= 15 * int.Parse(userInput);
-                                inventory_arrows += userAnswer;
-                                Console.WriteLine($"Вы купили {inventory_arrows} Стрел.\n У вас {inventory_arrows} Стрел  и {playerGold} денег");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("У Вас недостаточно золота.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("У Вас недостаточно золота.");
-                    }
-                }
-                else if (weaponChoice == 3)
-                {
-                    Console.WriteLine("Вы отказались");
-                }
-                Console.Write("Хотите еще что-то купить? (1 = да, 2 = нет): ");
-                string answer = Console.ReadLine().ToLower();
 
-                if (answer != "1")
+            DisplayFinalReport();
+            return playerGold;
+        }
+        static void DisplayStatus()
+        {
+            Console.Clear();    
+            Console.WriteLine("========================================");
+            Console.WriteLine("           ВАШ ИНВЕНТАРЬ                ");    
+            Console.WriteLine("========================================");
+            Console.WriteLine($"💰 Золото: {playerGold} монет");
+            Console.WriteLine($"🏹 Стрелы: {inventory_arrows} шт.");
+            Console.WriteLine($"🧪 Зелья здоровья: {inventoryCount} шт.");
+            Console.WriteLine("========================================\n");           
+        }
+        static void DisplayShop()
+        {
+            Console.WriteLine("=== ТОВАРЫ В МАГАЗИНЕ ===");
+            Console.WriteLine(" ──── ────────────────── ────────────── ");
+            Console.WriteLine("│ №  │     Товар        │    Цена      │");
+            Console.WriteLine(" ──── ────────────────── ────────────── ");
+            Console.WriteLine("│ 1  │ Стрелы           │     5 монет  │");
+            Console.WriteLine("│ 2  │ Зелье здоровья   │    15 монет  │");
+            Console.WriteLine(" ──── ────────────────── ────────────── ");
+        }
+        static void BuyArrows()
+        {
+            Console.WriteLine($"\n=== ПОКУПКА СТРЕЛ ===");
+            Console.WriteLine($"У вас есть: {inventory_arrows} стрел");
+            Console.WriteLine($"Ваше золото: {playerGold} монет");
+            Console.WriteLine($"Цена: 5 монет за 1 стрелу");
+
+            Console.Write("Сколько стрел хотите купить? ");
+
+            if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
+            {
+                int totalCost = quantity * 5;
+
+                if (totalCost > playerGold)
                 {
-                    Console.ReadKey();
+                    Console.WriteLine($"Недостаточно золота! Нужно {totalCost} монет, а у вас {playerGold}.");
                 }
-                
-                    return playerGold;
+                else
+                {
+                    // Совершаем покупку
+                    playerGold -= totalCost;
+                    inventory_arrows += quantity;
+
+                    Console.WriteLine($"\n✅ Успешная покупка!");
+                    Console.WriteLine($"Куплено: {quantity} стрел");
+                    Console.WriteLine($"Потрачено: {totalCost} монет");
+                    Console.WriteLine($"Осталось золота: {playerGold} монет");
+                    Console.WriteLine($"Теперь у вас стрел: {inventory_arrows} шт.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Неверное количество!");
             }
         }
+        static void BuyPotions()
+        {
+            Console.WriteLine($"\n=== ПОКУПКА ЗЕЛИЙ ===");
+            Console.WriteLine($"У вас есть: {inventoryCount} зелий");
+            Console.WriteLine($"Ваше золото: {playerGold} монет");
+            Console.WriteLine($"Цена: 15 монет за 1 зелье");
 
-        static int BattleWithMonster1(int playerHealth, ref int inventoryCount, ref int inventory_arrows)
+            Console.Write("Сколько зелий хотите купить? ");
+
+            if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
+            {
+                int totalCost = quantity * 15;
+
+                if (totalCost > playerGold)
+                {
+                    Console.WriteLine($"Недостаточно золота! Нужно {totalCost} монет, а у вас {playerGold}.");
+                }
+                else
+                {
+                    // Совершаем покупку
+                    playerGold -= totalCost;
+                    inventoryCount += quantity;
+
+                    Console.WriteLine($"\n✅ Успешная покупка!");
+                    Console.WriteLine($"Куплено: {quantity} зелий");
+                    Console.WriteLine($"Потрачено: {totalCost} монет");
+                    Console.WriteLine($"Осталось золота: {playerGold} монет");
+                    Console.WriteLine($"Теперь у вас зелий: {inventoryCount} шт.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Неверное количество!");
+            }
+        }
+        static void DisplayFinalReport()
+        {
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("           ИТОГИ ПОКУПОК               ");
+            Console.WriteLine("========================================");
+            Console.WriteLine($" Остаток золота: {playerGold} монет"); //💰 золото
+            Console.WriteLine($" Всего стрел: {inventory_arrows} шт."); //🏹 лук
+            Console.WriteLine($" Всего зелий: {inventoryCount} шт."); // 🧪 зелье лечения 
+            Console.WriteLine("\nСпасибо за покупки! Удачных приключений!");
+            Console.WriteLine("\nНажмите любую клавишу для выхода...");
+            Console.ReadKey();
+        }
+
+        static int BattleWithMonster1()
         {
             Random random = new Random();
             int monsterHealth = random.Next(51, 80);
@@ -154,16 +306,16 @@ class Program
             Console.Write($" HP!");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"\n Зелий у вас  {inventoryCount}");
+            Console.Write($"\n Зелий   {inventoryCount}");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"\n Стрел у вас  {inventoryCount}");
+            Console.WriteLine($"\n Стрел   {inventory_arrows}");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($" У вас {playerHealth} HP! ");
             Console.ResetColor();
 
-            Console.WriteLine($"\n У вас {inventoryCount} зелий ");
+            //Console.WriteLine($"\n У вас {inventoryCount} зелий ");
 
             while (playerHealth > 0 && monsterHealth > 0)
             {
@@ -199,21 +351,21 @@ class Program
                 {
                    
                        
-                        playerHealth1 = random.Next(15, 30);
-                        playerHealth2 = playerHealth + playerHealth1; 
-                        Console.Write($"Вы добавили себе {playerHealth1} ");
+                    playerHealth1 = random.Next(15, 30);
+                    playerHealth2 = playerHealth + playerHealth1; 
+                    Console.WriteLine($"Вы добавили себе {playerHealth1} ");
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write($" HP.");
                     Console.ResetColor();
-                    Console.WriteLine($"Осталось здоровье: {playerHealth2}");
+                    Console.Write($"Здоровье: {playerHealth2}");
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write($"HP!");
                     Console.ResetColor();
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write($"\n Зелий у вас осталось {inventoryCount}");
+                    Console.Write($"\n Зелий  {inventoryCount}");
                     Console.ResetColor();
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.Write($"\n Стрел у вас осталось {inventory_arrows}");
+                    Console.Write($"\n Стрел  {inventory_arrows}");
                     Console.ResetColor();
                     inventoryCount--;
                     
@@ -237,37 +389,36 @@ class Program
                     if (weaponChoice == 3) // Зелье Лечения
                     {
                         playerHealth = playerHealth2;
-                        Console.Write($" Босс атакует! Вы потеряли {monsterDamage} ");
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write($" HP");
+                    
+                     
                         Console.ResetColor();
-                        Console.Write($" Осталось здоровье: {playerHealth}");
+                        Console.Write($" Здоровье: {playerHealth}");
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($" HP! ");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write($"\n Зелий у вас осталось {inventoryCount}");
+                        Console.Write($"\n Зелий  {inventoryCount}");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"\n Стрел у вас осталось {inventory_arrows}");
+                        Console.WriteLine($"\n Стрел  {inventory_arrows}");
                         Console.ResetColor();
                     }
                     if (weaponChoice == 2 ) // лук
                     {
                         Console.Write(" Вы прострелили Босса, он не смог до вас дотянуться " );
-                        Console.Write($" Босс атакует! Вы потеряли 0 ");
+                       
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($" HP ");
                         Console.ResetColor();
-                        Console.Write($"Осталось здоровье: {playerHealth}");
+                        Console.Write($"Здоровье: {playerHealth}");
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($" HP! ");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write($"\n Зелий у вас осталось {inventoryCount}");
+                        Console.Write($"\n Зелий  {inventoryCount}");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"\n Стрел у вас осталось {inventory_arrows}");
+                        Console.WriteLine($"\n Стрел  {inventory_arrows}");
                         Console.ResetColor();
                     }
                     if (weaponChoice == 1) // меч
@@ -277,15 +428,15 @@ class Program
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($" HP. ");
                         Console.ResetColor();
-                        Console.Write($" Осталось здоровье: {playerHealth}");
+                        Console.Write($" Здоровье: {playerHealth}");
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($" HP! ");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write($"\n Зелий у вас осталось {inventoryCount}");
+                        Console.Write($"\n Зелий  {inventoryCount}");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"\n Стрел у вас осталось {inventory_arrows}");
+                        Console.WriteLine($"\n Стрел  {inventory_arrows}");
                         Console.ResetColor();
 
                     }
@@ -297,7 +448,7 @@ class Program
         }
 
 
-        static int BattleWithMonster(int playerHealth, ref int inventoryCount, ref int inventory_arrows)
+        static int BattleWithMonster()
         {
             Random random = new Random();
             int monsterHealth = random.Next(20, 51);
@@ -307,10 +458,10 @@ class Program
             Console.ResetColor();
           
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"\n Зелий у вас  {inventoryCount}");
+            Console.Write($"\n Зелий   {inventoryCount}");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"\n Стрел у вас  {inventoryCount}");
+            Console.WriteLine($"\n Стрел   {inventory_arrows}");
             Console.ResetColor();         
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($" У вас {playerHealth} HP! ");
@@ -347,10 +498,10 @@ class Program
                 else if (weaponChoice == 3 && inventoryCount > 0) // Зелье Лечения
                 {
                       
-                        playerHealth1 = random.Next(15, 30);
-                        playerHealth2 = playerHealth + playerHealth1;
-                        inventoryCount -= 1;
-                        Console.WriteLine($"Вы добавили себе {playerHealth1} " );
+                    playerHealth1 = random.Next(15, 30);
+                    playerHealth2 = playerHealth + playerHealth1;
+                    inventoryCount -= 1;
+                    Console.WriteLine($"Вы добавили себе {playerHealth1} " );
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write($"HP! ");
                     Console.ResetColor();
@@ -377,20 +528,20 @@ class Program
                     if (weaponChoice == 3 ) // Зелье Лечения
                     {
                         playerHealth = playerHealth2;
-                        Console.Write($"Монстр атакует! Вы потеряли {monsterDamage}");
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write($"HP");
-                        Console.ResetColor();
-                        Console.Write($" Здоровье: {playerHealth}");                                               
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write($" HP! ");
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write($"\n Зелий  {inventoryCount}");
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"\n Стрел  {inventoryCount}");
-                        Console.ResetColor();
+                        //Console.Write($"Монстр атакует! Вы потеряли {monsterDamage}");
+                        //Console.ForegroundColor = ConsoleColor.Red;
+                        //Console.Write($"HP");
+                        //Console.ResetColor();
+                        //Console.Write($" Здоровье: {playerHealth}");                                               
+                        //Console.ForegroundColor = ConsoleColor.Red;
+                        //Console.Write($" HP! ");
+                        //Console.ResetColor();
+                        //Console.ForegroundColor = ConsoleColor.Green;
+                        //Console.Write($"\n Зелий  {inventoryCount}");
+                        //Console.ResetColor();
+                        //Console.ForegroundColor = ConsoleColor.Blue;
+                        //Console.WriteLine($"\n Стрел  {inventoryCount}");
+                        //Console.ResetColor();
                     }
                     if (weaponChoice == 2 ) // лук
                     {
@@ -399,16 +550,16 @@ class Program
                         //Console.ForegroundColor = ConsoleColor.Red;
                         //Console.Write($" HP ");
                         //Console.ResetColor();
-                        Console.Write($"Осталось здоровье: {playerHealth}");
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write($" HP! ");
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write($"\n Зелий {inventoryCount}");
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"\n Стрел {inventoryCount}");
-                        Console.ResetColor();
+                        //Console.Write($"Осталось здоровье: {playerHealth}");
+                        //Console.ForegroundColor = ConsoleColor.Red;
+                        //Console.Write($" HP! ");
+                        //Console.ResetColor();
+                        //Console.ForegroundColor = ConsoleColor.Green;
+                        //Console.Write($"\n Зелий {inventoryCount}");
+                        //Console.ResetColor();
+                        //Console.ForegroundColor = ConsoleColor.Blue;
+                        //Console.WriteLine($"\n Стрел {inventoryCount}");
+                        //Console.ResetColor();
                     }
                     
                     if (weaponChoice == 1) // меч
@@ -426,7 +577,7 @@ class Program
                         Console.Write($"\n Зелий  {inventoryCount}");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"\n Стрел  {inventoryCount}");
+                        Console.WriteLine($"\n Стрел  {inventory_arrows}");
                         Console.ResetColor();
 
                     }
@@ -437,15 +588,15 @@ class Program
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($" HP. ");
                         Console.ResetColor();
-                        Console.Write($"Осталось здоровье: {playerHealth}");
+                        Console.Write($" Здоровье: {playerHealth}");
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write($" HP! ");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write($"\n Зелий у вас осталось {inventoryCount}");
+                        Console.Write($"\n Зелий  {inventoryCount}");
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine($"\n Стрел у вас осталось {inventoryCount}");
+                        Console.WriteLine($"\n Стрел  {inventory_arrows}");
                         Console.ResetColor();
                     }
                 }
@@ -462,11 +613,11 @@ class Program
             switch (dungeonMap[room])
             {
                 case "Monster":
-                    playerHealth = BattleWithMonster(playerHealth, ref inventoryCount, ref inventory_arrows);
+                    playerHealth = BattleWithMonster();
                     if (playerHealth <= 0) return;// Конец игры
                     int leftovers = random.Next(10, 50);
                     playerGold += leftovers; // Конец рунда
-                    Console.WriteLine($"Вы победили монстра.\n Вы нашли у него {leftovers} золота \n У вас {inventoryCount} зелий и {playerGold} денег");
+                    Console.WriteLine($"Вы победили монстра.\n Вы нашли у него {leftovers} золота \n зелий {inventoryCount} \n стрел {inventory_arrows} \n зелий и {playerGold} денег");
                     Console.ReadKey();
                     break;
 
@@ -484,7 +635,7 @@ class Program
                     break;
 
                 case "Merchant":
-                    playerGold = Merchant(playerGold, ref  inventoryCount, ref  inventory_arrows);
+                    playerGold = Merchant();
                     Console.ReadKey();
                     break;
 
@@ -497,7 +648,7 @@ class Program
 
                 case "Boss":
                     Console.WriteLine("Вы встретили босса!");
-                    playerHealth = BattleWithMonster1(playerHealth, ref inventoryCount, ref  inventory_arrows);
+                    playerHealth = BattleWithMonster1();
                     if (playerHealth <= 0) return;
                     
                     Console.WriteLine($"Вы победили Босса.\n  У вас осталось {inventoryCount} зелий  и {playerGold} денег");// Конец игры // Логика боя с боссом
@@ -508,5 +659,32 @@ class Program
         }
     }
 }
-    
+class Product
+{
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+
+
+    public Product(string name, decimal price)
+    {
+        Name = name;
+        Price = price;
+
+    }
+}
+
+class Purchase
+{
+    public string ProductName { get; set; }
+    public int Quantity { get; set; }
+    public decimal TotalPrice { get; set; }
+
+    public Purchase(string productName, int quantity, decimal totalPrice)
+    {
+        ProductName = productName;
+        Quantity = quantity;
+        TotalPrice = totalPrice;
+    }
+}
+
 
